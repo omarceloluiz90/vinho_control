@@ -3,10 +3,10 @@ package com.example.vc.boot.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -15,6 +15,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -45,7 +46,7 @@ public class Vinho implements Serializable {
     @Column(name = "vin_cont_garrafa", precision = 6, scale = 3, nullable = false)
     private BigDecimal conteudoVolume;
     
-    @Column(name = "vin_coment_som", length = 255, nullable = true, unique = false)
+    @Column(name = "vin_coment_som", length = 1000, nullable = true, unique = false)
     private String comentario;
     
     @Column(name = "vin_tipo_uva", length = 60, nullable = true, unique = false)
@@ -69,8 +70,8 @@ public class Vinho implements Serializable {
     @Column(name = "vin_teor_acoolico", length = 60, nullable = true, unique = false)
     private String teorAlcoolico;
     
-    @Column(name = "vin_temp_serv", nullable = true, unique = false)
-    private Integer temperaturaServico;
+    @Column(name = "vin_temp_serv", length = 40, nullable = true, unique = false)
+    private String temperaturaServico;
     
     @Column(name= "vin_pot_guarda", length = 60, nullable = true, unique = false)
     private String potencialGuarda;
@@ -84,9 +85,13 @@ public class Vinho implements Serializable {
     @Column(name = "vin_gustativo", length = 60, nullable = true, unique = false)
     private String gustativo;
     
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name="vin_fk_usr_id_cad")
+    @ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name="vin_fk_usr_id_cad", nullable = false)
     @JsonIgnore
     private Usuario UsuarioCad;
+    
+    @OneToMany(mappedBy = "vinho", fetch = FetchType.EAGER)
+    @JsonIgnore
+    private List<LocalAdega> localadega;
 
 }

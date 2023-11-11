@@ -11,6 +11,7 @@ public class UsuarioDTO implements Serializable {
 	private String nome;
 	private String situacao;
 	private Integer idPerfil;
+	private String nomePerfil;
 	
 	public UsuarioDTO() {
 		super();
@@ -23,6 +24,7 @@ public class UsuarioDTO implements Serializable {
 		this.nome = iObj.getNome();
 		this.situacao = iObj.getSituacao();
 		this.setIdPerfil(iObj.getPerfilUsuario().getId());
+		this.setNomePerfil(iObj.getPerfilUsuario().getNome());
 	}
 
 	public Integer getId() {
@@ -55,6 +57,14 @@ public class UsuarioDTO implements Serializable {
 
 	public void setIdPerfil(Integer idPerfil) {
 		this.idPerfil = idPerfil;
+	}
+
+	public String getNomePerfil() {
+		return nomePerfil;
+	}
+
+	public void setNomePerfil(String nomePerfil) {
+		this.nomePerfil = nomePerfil;
 	}
 	
 }

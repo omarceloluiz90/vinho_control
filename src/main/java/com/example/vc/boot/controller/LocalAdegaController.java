@@ -3,49 +3,62 @@ package com.example.vc.boot.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.example.vc.boot.domain.LocalAdega;
+import com.example.vc.boot.dto.LocalAdegaDTO;
 import com.example.vc.boot.service.LocalAdegaService;
 
-@RestController()
-@RequestMapping("/local_adega")
+
+@Controller
+@RequestMapping(value="/local_adega")
 public class LocalAdegaController {
 	@Autowired
 	private LocalAdegaService localAdegaService;
 	
-	@GetMapping
-    public List<LocalAdega> listarTodos() {
-		return localAdegaService.listarTodos();
+	@GetMapping(value="/")
+    public ModelAndView listarTodos() {
+		List<LocalAdegaDTO> lLocalAdegaDTO = localAdegaService.listarTodos();
+		ModelAndView mav = new ModelAndView("/local_adega/index");
+		mav.addObject("nome_usuario", "Gerente");
+        mav.addObject("localAdegaID", lLocalAdegaDTO);
+        return mav;
     }
 	
-	@GetMapping("/{id}")
-	public LocalAdega encontrarLocalAdegaPorId(@PathVariable Integer id) {
-		return localAdegaService.encontrarLocalAdegaPorId(id);
-	}
+	@GetMapping(value="/find/{id}")
+    public ModelAndView encontrarLocalAdegaPorId(@PathVariable Integer id) {
+		LocalAdega iObj = localAdegaService.encontrarLocalAdegaPorId(id);
+		ModelAndView mav = new ModelAndView("/local_adega/cadastro");
+		mav.addObject("nome_usuario", "Gerente");
+        mav.addObject("localAdegaID", iObj);
+        return mav;
+    }
+		
+	@GetMapping(value="/insert")
+	public String cadastrarLocalAdega(Model iModelAttr) {
+		LocalAdega iObj = new LocalAdega();
+		iModelAttr.addAttribute("nome_usuario", "Gerente");
+		iModelAttr.addAttribute("localAdegaID", iObj);
+        return "/local_adega/cadastro";
+    }
 	
-	@PostMapping
-	public LocalAdega inserirLocalAdega(@RequestBody LocalAdega iLocalAdega) {
-		return localAdegaService.inserirLocalAdega(iLocalAdega);
-	}
+	@PostMapping(value="/update")
+    public String inserirLocalAdega(@ModelAttribute("localAdegaID") LocalAdega iModelAttr) {
+		localAdegaService.inserirLocalAdega(iModelAttr);
+		return "redirect:/local_adega/"; 
+    }
 	
-	@PutMapping
-	public LocalAdega alterarLocalAdega(@RequestBody LocalAdega iLocalAdega) {
-		return localAdegaService.alterarLocalAdega(iLocalAdega);
-	}
-	
-	@DeleteMapping("/{id}")
-	public LocalAdega excluirLocalAdega(@PathVariable Integer id) {
-		return localAdegaService.excluirLocalAdega(id);
-	}
-
+	@GetMapping(value="/delete/{id}")
+    public String excluirLocalAdega(@PathVariable Integer id) {
+		localAdegaService.excluirLocalAdega(id);
+		return "redirect:/local_adega/";
+    }
 }
-
 

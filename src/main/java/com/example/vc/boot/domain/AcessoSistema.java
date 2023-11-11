@@ -2,10 +2,10 @@ package com.example.vc.boot.domain;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -14,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -41,9 +42,13 @@ public class AcessoSistema implements Serializable {
 	@Column(name = "asi_descricao", length = 60, nullable = false, unique = true)
     private String descricao;
 	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name="asi_fk_usr_id_cad")
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name="asi_fk_usr_id_cad", nullable = false)
     @JsonIgnore
     private Usuario UsuarioCad;
+	
+	@OneToMany(mappedBy = "acessoSitema", fetch = FetchType.EAGER)
+	@JsonIgnore
+    private List<PerfilAcesso> perfisacesso;
 
 }

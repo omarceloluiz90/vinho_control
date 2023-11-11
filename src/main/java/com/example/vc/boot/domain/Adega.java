@@ -2,10 +2,10 @@ package com.example.vc.boot.domain;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -14,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -41,7 +42,7 @@ public class Adega implements Serializable {
 	@Column(name = "adg_codigo", nullable = true)
 	private Integer codigo;
 	
-	@Column(name = "adg_descricao", length = 100, nullable = false, unique = true)
+	@Column(name = "adg_descricao", length = 100, nullable = true, unique = true)
     private String descricao;
 	
 	@Column(name = "adg_nro_tot_fileira", nullable = false)
@@ -59,9 +60,13 @@ public class Adega implements Serializable {
 	@Column(name = "adg_situacao", length = 1, nullable = false, unique = false)
     private String situacao;
 	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name="adg_fk_usr_id_cad")
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name="adg_fk_usr_id_cad", nullable = false)
     @JsonIgnore
     private Usuario UsuarioCad;
+	
+	@OneToMany(mappedBy = "adega", fetch = FetchType.EAGER)
+    @JsonIgnore
+    private List<LocalAdega> localadega;
 
 }

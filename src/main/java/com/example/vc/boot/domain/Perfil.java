@@ -2,12 +2,10 @@ package com.example.vc.boot.domain;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -41,7 +39,7 @@ public class Perfil implements Serializable {
 	@Column(name = "pfl_dt_hr_cad", nullable = false)
 	private LocalDate dataCadastro;
 	
-	@Column(name = "pfl_nome", length = 100, nullable = false, unique = false)
+	@Column(name = "pfl_nome", length = 100, nullable = false, unique = true)
     private String nome;
 	
 	@Column(name = "pfl_observacao", length = 1000, nullable = true, unique = false)
@@ -50,13 +48,17 @@ public class Perfil implements Serializable {
 	@Column(name = "pfl_situacao", length = 1, nullable = false, unique = false)
     private String situacao;
 	
-	@OneToMany(mappedBy = "perfilUsuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
-	private List<Usuario> Usuario = new ArrayList<Usuario>();
-	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name="pfl_fk_usr_id_cad")
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name="pfl_fk_usr_id_cad", nullable = false)
     @JsonIgnore
     private Usuario UsuarioCad;
-
+	
+	@OneToMany(mappedBy = "perfilUsuario", fetch = FetchType.EAGER)
+	@JsonIgnore
+    private List<Usuario> usuarios;
+	
+	@OneToMany(mappedBy = "perfil", fetch = FetchType.EAGER)
+	@JsonIgnore
+    private List<PerfilAcesso> perfisacesso;
+	
 }

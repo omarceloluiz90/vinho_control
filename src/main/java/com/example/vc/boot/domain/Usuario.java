@@ -2,12 +2,10 @@ package com.example.vc.boot.domain;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -15,8 +13,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -41,10 +39,10 @@ public class Usuario implements Serializable {
 	@Column(name = "usr_dt_hr_cad", nullable = false)
 	private LocalDate dataCadastro;
 	
-	@Column(name = "usr_usr_id_cad", nullable = true)
+	@Column(name = "usr_usr_id_cad", nullable = false)
 	private Integer idUsuarioCad;
 	
-	@Column(name = "usr_nome", length = 60, nullable = false, unique = false)
+	@Column(name = "usr_nome", length = 60, nullable = false, unique = true)
     private String nome;
 	
 	@Column(name = "usr_senha", length = 100, nullable = false, unique = false)
@@ -56,29 +54,34 @@ public class Usuario implements Serializable {
     @Column(name = "usr_observacao", length = 1000, nullable = true, unique = false)
     private String observacao;
     
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name="usr_fk_pfl_id")
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="usr_fk_pfl_id", nullable = false)
     @JsonIgnore
     private Perfil perfilUsuario;
     
-    @OneToMany(mappedBy = "UsuarioCad", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "UsuarioCad", fetch = FetchType.EAGER)
     @JsonIgnore
-	private List<Perfil> Perfil = new ArrayList<Perfil>();
+    private List<Perfil> perfis;
     
-    @OneToMany(mappedBy = "UsuarioCad", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "UsuarioCad", fetch = FetchType.EAGER)
     @JsonIgnore
-	private List<PerfilAcesso> PerfilAcesso = new ArrayList<PerfilAcesso>();
+    private List<Vinho> vinhos;
     
-    @OneToMany(mappedBy = "UsuarioCad", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "UsuarioCad", fetch = FetchType.EAGER)
     @JsonIgnore
-	private List<AcessoSistema> AcessoSistema = new ArrayList<AcessoSistema>();
-	    
-    @OneToMany(mappedBy = "UsuarioCad", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
-	private List<Adega> Adega = new ArrayList<Adega>();
+    private List<Adega> adegas;
     
-    @OneToMany(mappedBy = "UsuarioCad", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "UsuarioCad", fetch = FetchType.EAGER)
     @JsonIgnore
-	private List<Vinho> Vinho = new ArrayList<Vinho>();
+    private List<AcessoSistema> acessosistema;
+    
+    @OneToMany(mappedBy = "UsuarioCad", fetch = FetchType.EAGER)
+    @JsonIgnore
+    private List<PerfilAcesso> perfisacesso;
+    
+    @OneToMany(mappedBy = "UsuarioCad", fetch = FetchType.EAGER)
+    @JsonIgnore
+    private List<LocalAdega> localadega;
+
 
 }

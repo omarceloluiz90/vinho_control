@@ -1,5 +1,6 @@
 package com.example.vc.boot.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.vc.boot.domain.Adega;
+import com.example.vc.boot.domain.Usuario;
 import com.example.vc.boot.dto.AdegaDTO;
 import com.example.vc.boot.repository.AdegaRepository;
 
@@ -15,29 +17,53 @@ import com.example.vc.boot.repository.AdegaRepository;
 public class AdegaService {
 	@Autowired
 	private AdegaRepository adegaRepository;
-	
+	@Autowired
+	private UsuarioService usuarioService;
+		
 	public List<AdegaDTO> listarTodos() {
-		List<Adega> lAdegas = adegaRepository.findAll();
-		List<AdegaDTO> lAdegasDTO = lAdegas.stream().map(obj -> new AdegaDTO(obj)).collect(Collectors.toList());
-		return lAdegasDTO; 
+		List<Adega> lAdega = adegaRepository.findAll();
+		List<AdegaDTO> lAdegaDTO = lAdega.stream().map(obj -> new AdegaDTO(obj)).collect(Collectors.toList());
+		return lAdegaDTO; 
     }
 	
 	public Adega encontrarAdegaPorId(Integer id) {
 		Optional<Adega> valor = adegaRepository.findById(id);
-			
-		if (valor.isEmpty()){
-			throw new RuntimeException("Registro não localizado na base de dados");
+		Adega iObj = null;
+        if (valor.isPresent())
+        	iObj = valor.get();
+        else
+            throw new RuntimeException("Registro não localizado para o id : " + id);
+        return iObj;
+	}
+	
+	public Adega cadastrarAdega(Integer idUsuario) {
+		Usuario usuarioCad = usuarioService.encontrarUsuarioPorId(idUsuario);
+		Adega iObj = new Adega();
+		iObj.setDataCadastro(LocalDate.now());
+		iObj.setUsuarioCad(usuarioCad);
+		return iObj;
+	}
+	
+	public Adega inserirAdega(Adega iModelAttr) {
+		Adega iObj = null;
+		if(iModelAttr.getId() != null){
+			Optional<Adega> valor = adegaRepository.findById(iModelAttr.getId());
+			if (valor.isPresent()){
+				iObj = valor.get();
+			}
+		} else {
+			iObj = cadastrarAdega(1);
 		}
 		
-		return valor.get();
-	}
-	
-	public Adega inserirAdega(Adega iAdega) {
-		return adegaRepository.save(iAdega);
-	}
-	
-	public Adega alterarAdega(Adega iAdega) {
-		return adegaRepository.save(iAdega);
+		iObj.setCodigo(iModelAttr.getCodigo());
+		iObj.setDescricao(iModelAttr.getDescricao());
+		iObj.setTotFileiras(iModelAttr.getTotColunas());
+		iObj.setTotColunas(iModelAttr.getTotColunas());
+		iObj.setTotPosicoes(iModelAttr.getTotPosicoes());
+		iObj.setObservacao(iModelAttr.getObservacao());
+		iObj.setSituacao(iModelAttr.getSituacao());
+		
+		return adegaRepository.save(iObj);
 	}
 	
 	public Adega excluirAdega(Integer id) {

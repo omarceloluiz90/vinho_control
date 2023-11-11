@@ -14,7 +14,7 @@ public class VinhoDTO implements Serializable {
 	private String tipoUva;
 	private Integer safra;
 	private String teorAlcoolico;
-	private Integer temperaturaServico;
+	private String temperaturaServico;
 	
 	public VinhoDTO() {
 		super();
@@ -80,11 +80,11 @@ public class VinhoDTO implements Serializable {
 		this.teorAlcoolico = teorAlcoolico;
 	}
 
-	public Integer getTemperaturaServico() {
+	public String getTemperaturaServico() {
 		return temperaturaServico;
 	}
 
-	public void setTemperaturaServico(Integer temperaturaServico) {
+	public void setTemperaturaServico(String temperaturaServico) {
 		this.temperaturaServico = temperaturaServico;
 	}
 	

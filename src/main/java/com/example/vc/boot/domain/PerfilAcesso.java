@@ -5,7 +5,6 @@ import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -14,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -38,12 +38,6 @@ public class PerfilAcesso implements Serializable {
 	@Column(name = "pas_dt_hr_cad", nullable = false)
 	private LocalDate dataCadastro;
 	
-	@Column(name = "pas_fk_pfl_id", nullable = false)
-	private Integer idPerfilAcesso;
-	
-	@Column(name = "pas_fk_asi_id", nullable = false)
-	private Integer idAcessoSitema;
-	
 	@Column(name = "pas_acessar", length = 1, nullable = false)
     private String podeAcessar;
 	
@@ -53,9 +47,19 @@ public class PerfilAcesso implements Serializable {
 	@Column(name = "pas_excluir", length = 1, nullable = false)
     private String podeExcluir;
 	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name="pas_fk_usr_id_cad")
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name="pas_fk_usr_id_cad", nullable = false)
     @JsonIgnore
     private Usuario UsuarioCad;
-
+	
+	@OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="pas_fk_pfl_id", nullable = false)
+    @JsonIgnore
+    private Perfil perfil;
+	
+	@OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="pas_fk_asi_id", nullable = false)
+    @JsonIgnore
+    private AcessoSistema acessoSitema;
+	
 }
