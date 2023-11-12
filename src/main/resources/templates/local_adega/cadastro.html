@@ -8,7 +8,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
       <meta name="description" content="">
       <meta name="author" content="">
-      <title>Local Vinho Adega-Cadastro</title>
+      <title>Local Vinho Adega-Gerenciar</title>
       <!-- Custom fonts for this template -->
       <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
       <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -82,7 +82,7 @@
                   <div class="bg-white py-2 collapse-inner rounded">
                      <h6 class="collapse-header">Local Vinho Adega</h6>
                      <a class="collapse-item" href="/local_adega/">Gerenciar Vinhos</a>
-                     <a class="collapse-item" href="/local_adega/insert/">Incluir Vinho Adega</a>
+                     <a class="collapse-item" th:href="@{/local_adega/insert}">Incluir Vinho na Adega</a>
                   </div>
                </div>
             </li>
@@ -274,52 +274,40 @@
                <div class="container-fluid">
                   <!-- Page Heading -->
                   <h1 class="h3 mb-4 text-gray-800">Gerenciar Local Vinho Adega</h1>
-                  <form action="#" th:action="@{/usuario/update}" method="post" th:object="${usuarioID}">
+                  <form action="#" th:action="@{/local_adega/update}" method="post" th:object="${localAdegaID}">
                      <div class="form-group">
-                        <label for="nome">Nome</label>
-                        <input type="text" th:field="${usuarioID.nome}" class="form-control" name="nome" aria-describedby="nomeHelp" placeholder="Login do Usuario para Acesso ao Sistema">
-                        <small id="nomeHelp" class="form-text text-muted">Login de Acesso ao Sistema.</small>
+                        <label for="vinho">Vinho</label>
+                        <select id="vinho" class="form-control" name="vinho" th:field="${localAdegaID.vinho.id}">
+                           <option th:each="data:${vinho}" th:value="${data.id}" th:text="${data.nome+'_'+data.conteudoVolume+'_'+data.safra}"
+                              th:selected="${localAdegaID.vinho != null and localAdegaID.vinho.id == data.id}"></option>
+                        </select>
                      </div>
                      <div class="form-group">
-                        <label for="senha">Senha</label>
-                        <input type="text" th:field="${usuarioID.senha}" class="form-control" name="senha" aria-describedby="nomeHelp" placeholder="Senha do Usuario para Acesso ao Sistema">
-                        <small id="nomeHelp" class="form-text text-muted">Senha para Acesso ao Sistema.</small>
-                        <button type="button" class="btn btn-primary btn-sm" id="ativarMascara">Ativar Máscara</button> 
-                        <script type="text/javascript">
-                           $(document).ready(function() {
-                               $('#ativarMascara').click(function() {
-                                   var senhaInput = $('#senha');
-                                   senhaInput.prop('type', 'text'); // Altera o tipo de input para 'text'
-                                   senhaInput.attr('maxlength', '4'); // Define o tamanho máximo da senha
-                                   // Adicione aqui a lógica para aplicar a máscara, se necessário
-                               });
-                           });
-                        </script>                 
+                        <label for="adega">Adega</label>
+                        <select id="adega" class="form-control" name="adega" th:field="${localAdegaID.adega.id}" th:onchange="alterouAdega(this)">
+                           <option th:if="${localAdegaID.adega == null}" value="" disabled selected hidden>Selecione uma Adega</option>
+                           <option th:each="data:${adega}" th:value="${data.id}" th:text="${data.codigo+'_'+data.descricao}"
+                              th:selected="${localAdegaID.adega != null and localAdegaID.adega.id == data.id}"></option>
+                        </select>
                      </div>
                      <div class="form-group">
-                        <label for="nome">Observações</label>
-                        <textarea th:field="${usuarioID.observacao}" id="observacao" class="form-control" name="observacao" rows="2" placeholder="Observações"></textarea>
+                        <label for="adegaFileira">#Fileira</label>
+                        <input type="number" th:field="${localAdegaID.adegaFileira}" class="form-control" name="adegaFileira" aria-describedby="nomeHelp" th:min="1" max="50" required>
+                     </div>
+                     <div class="form-group">
+                        <label for="adegaColuna">#Coluna</label>
+                        <input type="number" th:field="${localAdegaID.adegaColuna}" class="form-control" name="adegaColuna" aria-describedby="nomeHelp" th:min="1" max="50" required>
+                     </div>
+                     <div class="form-group">
+                        <label for="adegaPosicao">Nro. Posição</label>
+                        <input type="number" th:field="${localAdegaID.adegaPosicao}" class="form-control" name="adegaPosicao" aria-describedby="nomeHelp" th:min="1" max="5" required>
                      </div>
                      <div class="form-group">
                         <label for="id">ID</label>
-                        <input type="text" th:field="${usuarioID.id}" class="form-control" name="id" placeholder="Id" readonly>
-                     </div>
-                     <div class="form-group">
-                        <label for="situacao">Situação</label>
-                        <select id="situacao" class="form-control" name="situacao">
-                           <option value="A" th:selected="${usuarioID.situacao == 'A'}">Ativo</option>
-                           <option value="I" th:selected="${usuarioID.situacao == 'I'}">Inativo</option>
-                        </select>
-                     </div>
-                     <div class="form-group">
-                        <label for="perfil">Perfil de Acesso Sistema</label>
-                        <select id="perfil" class="form-control" name="perfil" th:field="${usuarioID.perfilUsuario.id}">
-                           <option th:each="data:${perfil}" th:value="${data.id}" th:text="${data.nome}"
-                              th:selected="${usuarioID.perfilUsuario != null and usuarioID.perfilUsuario.id == data.id}"></option>
-                        </select>
+                        <input type="text" th:field="${localAdegaID.id}" class="form-control" name="id" placeholder="Id" readonly>
                      </div>
                      <button type="submit" class="btn btn-primary btn-sm">Salvar</button>
-                     <a th:href="@{/usuario/}" class="btn btn-secondary btn-sm">Cancelar</a>                  
+                     <a th:href="@{/local_adega/}" class="btn btn-secondary btn-sm">Cancelar</a>                  
                   </form>
                </div>
                <!-- /.container-fluid -->

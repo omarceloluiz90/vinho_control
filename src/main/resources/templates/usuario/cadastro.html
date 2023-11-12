@@ -82,7 +82,7 @@
                   <div class="bg-white py-2 collapse-inner rounded">
                      <h6 class="collapse-header">Local Vinho Adega</h6>
                      <a class="collapse-item" href="/local_adega/">Gerenciar Vinhos</a>
-                     <a class="collapse-item" href="/local_adega/insert/">Incluir Vinho Adega</a>
+                     <a class="collapse-item" th:href="@{/local_adega/insert}">Incluir Vinho na Adega</a>
                   </div>
                </div>
             </li>
@@ -283,18 +283,7 @@
                      <div class="form-group">
                         <label for="senha">Senha</label>
                         <input type="text" th:field="${usuarioID.senha}" class="form-control" name="senha" aria-describedby="nomeHelp" placeholder="Senha do Usuario para Acesso ao Sistema">
-                        <small id="nomeHelp" class="form-text text-muted">Senha para Acesso ao Sistema.</small>
-                        <button type="button" class="btn btn-primary btn-sm" id="ativarMascara">Ativar Máscara</button> 
-                        <script type="text/javascript">
-                           $(document).ready(function() {
-                               $('#ativarMascara').click(function() {
-                                   var senhaInput = $('#senha');
-                                   senhaInput.prop('type', 'text'); // Altera o tipo de input para 'text'
-                                   senhaInput.attr('maxlength', '4'); // Define o tamanho máximo da senha
-                                   // Adicione aqui a lógica para aplicar a máscara, se necessário
-                               });
-                           });
-                        </script>                 
+                        <small id="nomeHelp" class="form-text text-muted">Senha para Acesso ao Sistema.</small>                
                      </div>
                      <div class="form-group">
                         <label for="nome">Observações</label>
